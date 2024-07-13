@@ -492,6 +492,18 @@ public class Reddit4J {
         return new SubredditPostListingEndpointRequest("/user/" + username + "/submitted", this);
     }
 
+    public Optional<RedditPost> getRandom() throws IOException, InterruptedException {
+        Connection connection = useEndpoint("/random").method(Method.GET);
+        Response response = this.httpClient.execute(connection);
+
+        TypeToken<?> ttData3 = TypeToken.getParameterized(RedditData.class, RedditPost.class);
+        TypeToken<?> ttData2 = TypeToken.getParameterized(RedditListing.class, ttData3.getType());
+        TypeToken<?> ttData = TypeToken.getParameterized(RedditData.class, ttData2.getType());
+        RedditData<RedditListing<RedditData<RedditPost>>> fromJson = new Gson().fromJson(response.body(), ttData.getType());
+
+        return fromJson.getData().getChildren().stream().findFirst().map(RedditData::getData);
+    }
+
     public String getRawJson(String endpointPath, Method method) throws IOException, InterruptedException {
         Connection connection = useEndpoint(endpointPath).method(method);
         Response response = this.httpClient.execute(connection);
