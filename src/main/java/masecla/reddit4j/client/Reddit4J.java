@@ -493,7 +493,7 @@ public class Reddit4J {
     }
 
     public Optional<RedditPost> getRandom() throws IOException, InterruptedException {
-        Connection connection = useEndpoint("/random").method(Method.GET).data("scope", "read");
+        Connection connection = useEndpoint("/random");
         Response response = this.httpClient.execute(connection);
 
         TypeToken<?> ttData3 = TypeToken.getParameterized(RedditData.class, RedditPost.class);
